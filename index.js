@@ -5,7 +5,8 @@ const setup = async () => {
 
     const pokemons = result.data.results;
 
-    for (let i = 0; i < pokemons.length; i++) {
+
+    for (let i = 0; i < pokemons.slice(0, 10).length; i++) {
         // pokemons.forEach(async (pokemon, index) => {
         pokemon = pokemons[i];
         index = i;
@@ -50,7 +51,7 @@ const setup = async () => {
                     </div>
                 </div>
             </div>
-            
+
     `);
     };
 
@@ -63,9 +64,70 @@ const setup = async () => {
         `);
     }
 
+    //add event listeners to the buttons
+    $("#paginationControls button").on("click", async (event) => {
+        console.log("event handler")        //empty the main div
+        $("#main").empty();
+
+        const startIndex = (event.target.innerText - 1) * PAGE_SIZE;
+        const endIndex = startIndex + PAGE_SIZE;
+
+        const slicedPokemons = pokemons.slice(startIndex, endIndex);
+        console.log(slicedPokemons);
+        console.log(startIndex);
+        for (let i = 0; i < slicedPokemons.length; i++) {
+            // pokemons.forEach(async (pokemon, index) => {
+            pokemon = slicedPokemons[i];
+            index = i;
+            //get current pokemon's data
+            const pokemonResult = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`);
 
 
-}
+            $("#main").append(`
+            <div class="card" style="width: 18rem;">
+            <img class="card-img-top" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${index + 1 + startIndex}.png" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">${pokemon.name}</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <a href="#" class="btn btn-primary">Go somewhere</a>
+
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal${pokemon.name}">
+                        Launch demo modal
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal${pokemon.name}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">${pokemon.name}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    ${pokemonResult.data.id}
+                                    <ul id="modalList">
+                                    </ul>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    `);
+        };
+
+
+    });
+
+};
 
 
 
