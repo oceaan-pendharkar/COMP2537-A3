@@ -4,10 +4,11 @@ const setup = async () => {
     const result = await axios.get("https://pokeapi.co/api/v2/pokemon?limit=810");
 
     const pokemons = result.data.results;
-    console.log(pokemons);
 
-
-    pokemons.forEach(async (pokemon, index) => {
+    for (let i = 0; i < pokemons.length; i++) {
+        // pokemons.forEach(async (pokemon, index) => {
+        pokemon = pokemons[i];
+        index = i;
         //get current pokemon's data
         const pokemonResult = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`);
 
@@ -51,8 +52,16 @@ const setup = async () => {
             </div>
             
     `);
+    };
 
-    });
+    //get the 81 buttons
+    const PAGE_SIZE = 10;
+    const numberOfBUttons = Math.ceil(pokemons.length / PAGE_SIZE);
+    for (let i = 0; i < numberOfBUttons; i++) {
+        $("#paginationControls").append(`
+            <button type="button" class="btn btn-primary" id="button${i}">${i + 1}</button>
+        `);
+    }
 
 
 
