@@ -3,18 +3,18 @@ const setup = async () => {
 
     const result = await axios.get("https://pokeapi.co/api/v2/pokemon?limit=810");
 
-    const pokemons = result.data.results.slice;
+    const pokemons = result.data.results;
     console.log(pokemons);
 
 
-    //     pokemons.forEach((pokemon, index) => {
-    //         $("#main").append(`
-    //         <div class="card" style="width: 18rem;">
-    //   <img class="card-img-top" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${index + 1}.png" alt="Card image cap">
-    //   <div class="card-body">
-    //     <h5 class="card-title">${pokemon.name}</h5>
-    //     <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    //     <a href="#" class="btn btn-primary">Go somewhere</a>
+    pokemons.forEach((pokemon, index) => {
+        $("#main").append(`
+            <div class="card" style="width: 18rem;">
+      <img class="card-img-top" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${index + 1}.png" alt="Card image cap">
+      <div class="card-body">
+        <h5 class="card-title">${pokemon.name}</h5>
+        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+        <a href="#" class="btn btn-primary">Go somewhere</a>
 
     //     <!-- Button trigger modal -->
     //     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
@@ -43,10 +43,11 @@ const setup = async () => {
     //     </div>
     //   </div>
     // </div>
-    //         `);
-    //     });
-    // }
+    //         
+    `);
+    });
+}
 
 
 
-    $(document).ready(setup);
+$(document).ready(setup);
