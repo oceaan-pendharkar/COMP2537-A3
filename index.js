@@ -70,6 +70,18 @@ const setup = async () => {
         console.log("event handler")        //empty the main div
         $("#main").empty();
 
+        if (event.target.innerText == 1) {
+            $("#prev").addClass("disabled");
+        } else {
+            $("#prev").removeClass("disabled");
+        }
+
+        if (event.target.innerText == numberOfBUttons) {
+            $("#next").addClass("disabled");
+        } else {
+            $("#next").removeClass("disabled");
+        }
+
         const startIndex = (event.target.innerText - 1) * PAGE_SIZE;
         const endIndex = startIndex + PAGE_SIZE;
 
@@ -78,8 +90,8 @@ const setup = async () => {
         console.log(startIndex);
         for (let i = 0; i < slicedPokemons.length; i++) {
             // pokemons.forEach(async (pokemon, index) => {
-            pokemon = slicedPokemons[i];
-            index = i;
+            let pokemon = slicedPokemons[i];
+            let index = i;
             //get current pokemon's data
             const pokemonResult = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`);
 
