@@ -8,8 +8,6 @@ const setup = async () => {
     //display total number of pokemons
     $("#totalPokemons").text(pokemons.length);
 
-
-
     for (let i = 0; i < pokemons.slice(0, 10).length; i++) {
         // pokemons.forEach(async (pokemon, index) => {
         pokemon = pokemons[i];
@@ -62,6 +60,8 @@ const setup = async () => {
     //get the 81 buttons
     const PAGE_SIZE = 10;
     const numberOfBUttons = Math.ceil(pokemons.length / PAGE_SIZE);
+
+    //display the first 5 buttons
     for (let i = 0; i < numberOfBUttons; i++) {
         $("#paginationControls").append(`
             <button type="button" class="btn btn-primary" id="button${i}">${i + 1}</button>
@@ -155,7 +155,49 @@ const setup = async () => {
 
     });
 
+    //add event listener to the next button
+    $("#next").on("click", async (event) => {
+        //get id of the current active button
+        const activeButton = $(".highlight").attr("id");
 
+        if (!activeButton) {
+            $(`#button1`).trigger("click");
+            return;
+        }
+
+        //get the number of the current active button
+        const activeButtonNumber = parseInt(activeButton.slice(6));
+
+        console.log(activeButtonNumber);
+        //empty the main div
+        $("#main").empty();
+
+        //trigger the event handler for the id of the current active button
+        $(`#button${activeButtonNumber + 1}`).trigger("click");
+
+
+    });
+
+    //add event listener to the previous button
+    $("#prev").on("click", async (event) => {
+        //get id of the current active button
+        const activeButton = $(".highlight").attr("id");
+
+        if (!activeButton) {
+            $(`#button79`).trigger("click");
+            return;
+        }
+
+        //get the number of the current active button
+        const activeButtonNumber = parseInt(activeButton.slice(6));
+
+        console.log(activeButtonNumber);
+        //empty the main div
+        $("#main").empty();
+
+        //trigger the event handler for the id of the current active button
+        $(`#button${activeButtonNumber - 1}`).trigger("click");
+    });
 };
 
 
