@@ -34,9 +34,9 @@ const setup = async () => {
             }
             )
         });
-
     }
 
+    console.log(allPokemons);
     //remove duplicates from allTypes
     allTypes = [...new Set(allTypes)];
 
@@ -174,7 +174,7 @@ const setup = async () => {
         for (let i = 0; i < checkedCheckboxes.length; i++) {
             checkedCheckboxesValues.push(checkedCheckboxes[i].value);
         }
-        console.log(checkedCheckboxesValues);        
+        console.log(checkedCheckboxesValues);
 
         const filteredPokemons = allPokemons.filter((pokemon) => {
             //check if the pokemon has all the types in checkedCheckboxesValues
@@ -187,6 +187,16 @@ const setup = async () => {
 
         //display number of pokemons displayed
         $("#totalPokemons").text(filteredPokemons.length);
+
+        let pokemonsToDisplay;
+        if (filteredPokemons.length > 10) {
+            pokemonsToDisplay = 10;
+        } else {
+            pokemonsToDisplay = filteredPokemons.length;
+        }
+
+        //display number of pokemons per page
+        $("#displayedPokemons").text(pokemonsToDisplay);
 
         //display all filtered pokemons
         for (let i = 0; i < 10; i++) {
