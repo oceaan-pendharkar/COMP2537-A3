@@ -10,3 +10,7 @@
 .highlight {
     background-color: yellow;
 }
+
+.hidden {
+    display: none !important;
+}

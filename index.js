@@ -71,15 +71,16 @@ const setup = async () => {
         $("#main").empty();
 
         if (event.target.innerText == 1) {
-            $("#prev").addClass("disabled");
+            //hide previous button
+            $("#prev").addClass("hidden")
         } else {
-            $("#prev").removeClass("disabled");
+            $("#prev").removeClass("hidden");
         }
 
         if (event.target.innerText == numberOfBUttons) {
-            $("#next").addClass("disabled");
+            $("#next").addClass("hidden");
         } else {
-            $("#next").removeClass("disabled");
+            $("#next").removeClass("hidden");
         }
 
         //change the active button's colour
