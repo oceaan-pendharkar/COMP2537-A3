@@ -174,13 +174,14 @@ const setup = async () => {
         for (let i = 0; i < checkedCheckboxes.length; i++) {
             checkedCheckboxesValues.push(checkedCheckboxes[i].value);
         }
-        console.log(checkedCheckboxesValues);
+        console.log(checkedCheckboxesValues);        
 
-        //get the pokemons that have the checked types
         const filteredPokemons = allPokemons.filter((pokemon) => {
-            return pokemon.types.some((type) => {
-                return checkedCheckboxesValues.includes(type);
-            });
+            //check if the pokemon has all the types in checkedCheckboxesValues
+            return checkedCheckboxesValues.every((type) => {
+                return pokemon.types.includes(type);
+            }
+            );
         }
         );
 
@@ -337,6 +338,7 @@ const setup = async () => {
         const startIndex = (event.target.innerText - 1) * PAGE_SIZE;
         const endIndex = startIndex + PAGE_SIZE;
 
+
         const slicedPokemons = pokemons.slice(startIndex, endIndex);
         // console.log(slicedPokemons);
         // console.log(startIndex);
@@ -354,7 +356,6 @@ const setup = async () => {
                 <div class="card-body">
                     <h5 class="card-title">${pokemon.name}</h5>
                     <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
 
                     <!-- Button trigger modal -->
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal${pokemon.name}">
@@ -468,14 +469,6 @@ const setup = async () => {
 };
 
 
-//if all checkboxes are unchecked, call setup
-$("#checkboxes input").on("click", (event) => {
-    //get the checked checkboxes
-    const checkedCheckboxes = $("#checkboxes input:checked");
 
-    if (checkedCheckboxes.length == 0) {
-        setup();
-    }
-});
 
 $(document).ready(setup);
