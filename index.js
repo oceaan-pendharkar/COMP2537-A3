@@ -22,8 +22,6 @@ const setup = async () => {
                 <div class="card-body">
                     <h5 class="card-title">${pokemon.name}</h5>
                     <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
-
                     <!-- Button trigger modal -->
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal${pokemon.name}">
                         Launch demo modal
@@ -41,9 +39,15 @@ const setup = async () => {
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    ${pokemonResult.data.id}
-                                    <ul id="modalList">
+                                    <h1>Abilities</h1>
+                                    <ul id="${pokemonResult.data.id}Abilities">
                                     </ul>
+                                    <h1>Stats</h1>
+                                    <ul id="${pokemonResult.data.id}Stats">
+                                    </ul>
+                                    <h1>Types</h1>
+                                    <ul id="${pokemonResult.data.id}Types">
+                                    </ul> 
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -55,6 +59,56 @@ const setup = async () => {
             </div>
 
     `);
+
+
+        //create an array of abilities for specific pokemon
+        const abilities = pokemonResult.data.abilities.map((ability) => {
+            return ability.ability.name;
+        }
+        );
+
+        console.log(pokemonResult, abilities)
+
+        //create an array of stats
+        const stats = pokemonResult.data.stats.map((stat) => {
+            return stat.stat.name;
+        }
+
+        );
+
+        //create an array of types
+        const types = pokemonResult.data.types.map((type) => {
+            return type.type.name;
+        }
+        );
+
+        //display abilities
+        abilities.forEach((ability) => {
+            $(`#${pokemonResult.data.id}Abilities`).append(`
+            <li>${ability}</li>
+        `);
+
+        }
+        );
+
+        //display stats
+        stats.forEach((stat) => {
+            $(`#${pokemonResult.data.id}Stats`).append(`
+            <li>${stat}</li>
+        `);
+
+        }
+        );
+
+        //display types
+        types.forEach((type) => {
+            $(`#${pokemonResult.data.id}Types`).append(`
+            <li>${type}</li>
+        `);
+
+        }
+        );
+
     };
 
     //get the 81 buttons
@@ -158,8 +212,15 @@ const setup = async () => {
                                 </div>
                                 <div class="modal-body">
                                     ${pokemonResult.data.id}
-                                    <ul id="modalList">
+                                    <h1>Abilities</h1>
+                                    <ul id="abilities">
                                     </ul>
+                                    <h1>Stats</h1>
+                                    <ul id="stats">
+                                    </ul>
+                                    <h1>Types</h1>
+                                    <ul id="types">
+                                    </ul> 
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -171,6 +232,29 @@ const setup = async () => {
             </div>
 
     `);
+
+            //create an array of abilities
+            const abilities = pokemonResult.data.abilities.map((ability) => {
+                return ability.ability.name;
+            });
+
+            //create an array of stats
+            const stats = pokemonResult.data.stats.map((stat) => {
+                return stat.stat.name;
+            });
+
+            //create an array of types
+            const types = pokemonResult.data.types.map((type) => {
+                return type.type.name;
+            });
+
+            //display abilities
+            abilities.forEach((ability) => {
+                $("#abilities").append(`
+            <li>${ability}</li>
+        `);
+
+            });
         };
 
 
