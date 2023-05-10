@@ -92,9 +92,9 @@ const setup = async () => {
         );
 
         //display stats
-        stats.forEach((stat) => {
+        stats.forEach((stat, index) => {
             $(`#${pokemonResult.data.id}Stats`).append(`
-            <li>${stat}</li>
+            <li>${stat}: ${pokemonResult.data.stats[index].base_stat}</li>
         `);
 
         }
