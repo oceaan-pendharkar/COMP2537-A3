@@ -64,6 +64,7 @@ const setup = async () => {
         `);
     }
 
+
     //add event listeners to the buttons
     $("#paginationControls button").on("click", async (event) => {
         console.log("event handler")        //empty the main div
@@ -127,7 +128,9 @@ const setup = async () => {
 
     });
 
+
 };
+
 
 
 
