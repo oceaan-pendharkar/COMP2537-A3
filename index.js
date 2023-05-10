@@ -5,8 +5,43 @@ const setup = async () => {
 
     const pokemons = result.data.results;
 
+
     //display total number of pokemons
     $("#totalPokemons").text(pokemons.length);
+
+    let allTypes = [];
+    let allPokemons = [];
+
+    // for all pokemons, get their type and add to allTypes
+    for (let i = 0; i < pokemons.length; i++) {
+        const pokemonResult = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemons[i].name}`);
+        const types = pokemonResult.data.types.map((type) => {
+            return type.type.name;
+        });
+        allTypes = allTypes.concat(types);
+
+        //create an array of all pokemons with their types
+        allPokemons.push({
+            id: pokemonResult.data.id,
+            name: pokemons[i].name,
+            types: types,
+            abilities: pokemonResult.data.abilities.map((ability) => {
+                return ability.ability.name;
+            },
+            ),
+            stats: pokemonResult.data.stats.map((stat) => {
+                return stat.stat.name;
+            }
+            )
+        });
+
+    }
+
+    //remove duplicates from allTypes
+    allTypes = [...new Set(allTypes)];
+
+
+
 
     for (let i = 0; i < pokemons.slice(0, 10).length; i++) {
         // pokemons.forEach(async (pokemon, index) => {
@@ -24,7 +59,7 @@ const setup = async () => {
                     <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                     <!-- Button trigger modal -->
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal${pokemon.name}">
-                        Launch demo modal
+                        More
                     </button>
 
                     <!-- Modal -->
@@ -61,13 +96,14 @@ const setup = async () => {
     `);
 
 
+
         //create an array of abilities for specific pokemon
         const abilities = pokemonResult.data.abilities.map((ability) => {
             return ability.ability.name;
         }
         );
 
-        console.log(pokemonResult, abilities)
+        // console.log(pokemonResult, abilities)
 
         //create an array of stats
         const stats = pokemonResult.data.stats.map((stat) => {
@@ -81,6 +117,8 @@ const setup = async () => {
             return type.type.name;
         }
         );
+
+
 
         //display abilities
         abilities.forEach((ability) => {
@@ -110,6 +148,128 @@ const setup = async () => {
         );
 
     };
+
+    //make a checkbox for each type in #checkboxes
+    allTypes.forEach((type) => {
+        $("#checkboxes").append(`
+        <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="${type}" id="${type}">
+        <label class="form-check-label" for="${type}">
+        ${type}
+        </label>
+        </div>
+        `);
+    });
+
+    //add event listener to checkboxes
+    $("#checkboxes input").on("click", async (event) => {
+        //empty the main div
+        $("#main").empty();
+
+        //get the checked checkboxes
+        const checkedCheckboxes = $("#checkboxes input:checked");
+
+        //get the values of the checked checkboxes
+        const checkedCheckboxesValues = [];
+        for (let i = 0; i < checkedCheckboxes.length; i++) {
+            checkedCheckboxesValues.push(checkedCheckboxes[i].value);
+        }
+        console.log(checkedCheckboxesValues);
+
+        //get the pokemons that have the checked types
+        const filteredPokemons = allPokemons.filter((pokemon) => {
+            return pokemon.types.some((type) => {
+                return checkedCheckboxesValues.includes(type);
+            });
+        }
+        );
+
+        //display number of pokemons displayed
+        $("#totalPokemons").text(filteredPokemons.length);
+
+        //display all filtered pokemons
+        for (let i = 0; i < 10; i++) {
+            // pokemons.forEach(async (pokemon, index) => {
+            let pokemon = filteredPokemons[i];
+            let index = i;
+            //get current pokemon's data
+
+            $("#main").append(`
+            <div class="card" style="width: 18rem;">
+            <img class="card-img-top" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">${pokemon.name}</h5>
+                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal${pokemon.name}">
+                        More
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal${pokemon.name}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">${pokemon.name}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <h1>Abilities</h1>
+                                    <ul id="${pokemon.id}Abilities">
+                                    </ul>
+                                    <h1>Stats</h1>
+                                    <ul id="${pokemon.id}Stats">
+                                    </ul>
+                                    <h1>Types</h1>
+                                    <ul id="${pokemon.id}Types">
+                                    </ul> 
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    `);
+
+            //populate the pokemon's attributes
+            $(`#${pokemon.id}Abilities`).empty();
+            $(`#${pokemon.id}Stats`).empty();
+            $(`#${pokemon.id}Types`).empty();
+
+            //display abilities
+            pokemon.abilities.forEach((ability) => {
+                $(`#${pokemon.id}Abilities`).append(`
+            <li>${ability}</li>
+        `);
+            });
+
+            //display stats
+            pokemon.stats.forEach((stat, index) => {
+                $(`#${pokemon.id}Stats`).append(`
+            <li>${stat}: ${pokemon.stats[index].base_stat}</li>
+        `);
+            });
+
+            //display types
+            pokemon.types.forEach((type) => {
+                $(`#${pokemon.id}Types`).append(`
+            <li>${type}</li>
+        `);
+            });
+
+
+        }
+
+    });
+
+
 
     //get the 81 buttons
     const PAGE_SIZE = 10;
@@ -144,18 +304,20 @@ const setup = async () => {
         } else {
             $("#prev").removeClass("hidden");
 
-            //remove hidden class from event.target.innerText + 2
-            $(`#button${parseInt(event.target.innerText) + 1}`).removeClass("hidden");
-
-            //add hidden class to event.target.innerText - 6 and below
-            for (let i = parseInt(event.target.innerText) - 4; i >= 0; i--) {
-                $(`#button${i}`).addClass("hidden");
+            //hide all buttons except current button
+            for (let i = 0; i < numberOfBUttons; i++) {
+                if (i != parseInt(event.target.innerText) - 1) {
+                    $(`#button${i}`).addClass("hidden");
+                }
             }
 
-            // add hidden class to event.traget.innerText + 3 and above
-            for (let i = parseInt(event.target.innerText) + 2; i < numberOfBUttons; i++) {
-                $(`#button${i}`).addClass("hidden");
+            //remove hidden class from event.target.innerText - 2 to event.target.innerText + 2
+            for (let i = parseInt(event.target.innerText) - 3; i < parseInt(event.target.innerText) + 2; i++) {
+                if (i >= 0 && i < numberOfBUttons) {
+                    $(`#button${i}`).removeClass("hidden");
+                }
             }
+
 
         }
 
@@ -196,7 +358,7 @@ const setup = async () => {
 
                     <!-- Button trigger modal -->
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal${pokemon.name}">
-                        Launch demo modal
+                    More
                     </button>
 
                     <!-- Modal -->
@@ -306,6 +468,14 @@ const setup = async () => {
 };
 
 
+//if all checkboxes are unchecked, call setup
+$("#checkboxes input").on("click", (event) => {
+    //get the checked checkboxes
+    const checkedCheckboxes = $("#checkboxes input:checked");
 
+    if (checkedCheckboxes.length == 0) {
+        setup();
+    }
+});
 
 $(document).ready(setup);

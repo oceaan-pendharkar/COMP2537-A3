@@ -14,3 +14,12 @@
 .hidden {
     display: none !important;
 }
+
+#checkboxes {
+    display: flex;
+    flex-direction: row;
+}
+
+#checkboxes label {
+    margin-right: 30px;
+}
