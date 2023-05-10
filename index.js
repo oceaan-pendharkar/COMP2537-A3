@@ -82,6 +82,13 @@ const setup = async () => {
             $("#next").removeClass("disabled");
         }
 
+        //change the active button's colour
+        $("#paginationControls button").removeClass("highlight");
+        $("#paginationControls button").addClass("btn-primary");
+        $(event.target).removeClass("btn-primary");
+        $(event.target).addClass("highlight");
+
+
         const startIndex = (event.target.innerText - 1) * PAGE_SIZE;
         const endIndex = startIndex + PAGE_SIZE;
 

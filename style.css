@@ -6,3 +6,7 @@
     flex-wrap: wrap;
     gap: 10px;
 }
+
+.highlight {
+    background-color: yellow;
+}
