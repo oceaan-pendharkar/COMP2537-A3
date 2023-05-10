@@ -29,10 +29,14 @@ const setup = async () => {
                 return ability.ability.name;
             },
             ),
-            stats: pokemonResult.data.stats.map((stat) => {
-                return stat.stat.name;
-            }
-            )
+            stats:
+                pokemonResult.data.stats.map((stat) => {
+                    return {
+                        name: stat.stat.name,
+                        base_stat: stat.base_stat
+                    };
+                }
+                )
         });
     }
 
@@ -41,14 +45,11 @@ const setup = async () => {
     allTypes = [...new Set(allTypes)];
 
 
-
-
     for (let i = 0; i < pokemons.slice(0, 10).length; i++) {
         // pokemons.forEach(async (pokemon, index) => {
-        pokemon = pokemons[i];
+        pokemon = allPokemons[i];
         index = i;
         //get current pokemon's data
-        const pokemonResult = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`);
 
 
         $("#main").append(`
@@ -75,13 +76,13 @@ const setup = async () => {
                                 </div>
                                 <div class="modal-body">
                                     <h1>Abilities</h1>
-                                    <ul id="${pokemonResult.data.id}Abilities">
+                                    <ul id="${pokemon.id}Abilities">
                                     </ul>
                                     <h1>Stats</h1>
-                                    <ul id="${pokemonResult.data.id}Stats">
+                                    <ul id="${pokemon.id}Stats">
                                     </ul>
                                     <h1>Types</h1>
-                                    <ul id="${pokemonResult.data.id}Types">
+                                    <ul id="${pokemon.id}Types">
                                     </ul> 
                                 </div>
                                 <div class="modal-footer">
@@ -95,34 +96,9 @@ const setup = async () => {
 
     `);
 
-
-
-        //create an array of abilities for specific pokemon
-        const abilities = pokemonResult.data.abilities.map((ability) => {
-            return ability.ability.name;
-        }
-        );
-
-        // console.log(pokemonResult, abilities)
-
-        //create an array of stats
-        const stats = pokemonResult.data.stats.map((stat) => {
-            return stat.stat.name;
-        }
-
-        );
-
-        //create an array of types
-        const types = pokemonResult.data.types.map((type) => {
-            return type.type.name;
-        }
-        );
-
-
-
         //display abilities
-        abilities.forEach((ability) => {
-            $(`#${pokemonResult.data.id}Abilities`).append(`
+        pokemon.abilities.forEach((ability) => {
+            $(`#${pokemon.id}Abilities`).append(`
             <li>${ability}</li>
         `);
 
@@ -130,17 +106,17 @@ const setup = async () => {
         );
 
         //display stats
-        stats.forEach((stat, index) => {
-            $(`#${pokemonResult.data.id}Stats`).append(`
-            <li>${stat}: ${pokemonResult.data.stats[index].base_stat}</li>
+        pokemon.stats.forEach((stat, index) => {
+            $(`#${pokemon.id}Stats`).append(`
+            <li>${stat.name}: ${stat.base_stat}</li>
         `);
 
         }
         );
 
         //display types
-        types.forEach((type) => {
-            $(`#${pokemonResult.data.id}Types`).append(`
+        pokemon.types.forEach((type) => {
+            $(`#${pokemon.id}Types`).append(`
             <li>${type}</li>
         `);
 
@@ -199,7 +175,7 @@ const setup = async () => {
         $("#displayedPokemons").text(pokemonsToDisplay);
 
         //display all filtered pokemons
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < pokemonsToDisplay; i++) {
             // pokemons.forEach(async (pokemon, index) => {
             let pokemon = filteredPokemons[i];
             let index = i;
@@ -264,9 +240,12 @@ const setup = async () => {
             //display stats
             pokemon.stats.forEach((stat, index) => {
                 $(`#${pokemon.id}Stats`).append(`
-            <li>${stat}: ${pokemon.stats[index].base_stat}</li>
+            <li>${stat.name}: ${stat.base_stat}</li>
         `);
-            });
+
+            }
+
+            );
 
             //display types
             pokemon.types.forEach((type) => {
@@ -349,16 +328,13 @@ const setup = async () => {
         const endIndex = startIndex + PAGE_SIZE;
 
 
-        const slicedPokemons = pokemons.slice(startIndex, endIndex);
+        const slicedPokemons = allPokemons.slice(startIndex, endIndex);
         // console.log(slicedPokemons);
         // console.log(startIndex);
         for (let i = 0; i < slicedPokemons.length; i++) {
             // pokemons.forEach(async (pokemon, index) => {
             let pokemon = slicedPokemons[i];
             let index = i;
-            //get current pokemon's data
-            const pokemonResult = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`);
-
 
             $("#main").append(`
             <div class="card" style="width: 18rem;">
@@ -384,15 +360,15 @@ const setup = async () => {
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    ${pokemonResult.data.id}
+                                    ${pokemon.id}
                                     <h1>Abilities</h1>
-                                    <ul id="abilities">
+                                    <ul id="${pokemon.id}Abilities">
                                     </ul>
                                     <h1>Stats</h1>
-                                    <ul id="stats">
+                                    <ul id="${pokemon.id}Stats">
                                     </ul>
                                     <h1>Types</h1>
-                                    <ul id="types">
+                                    <ul id="${pokemon.id}Types">
                                     </ul> 
                                 </div>
                                 <div class="modal-footer">
@@ -406,27 +382,28 @@ const setup = async () => {
 
     `);
 
-            //create an array of abilities
-            const abilities = pokemonResult.data.abilities.map((ability) => {
-                return ability.ability.name;
-            });
-
-            //create an array of stats
-            const stats = pokemonResult.data.stats.map((stat) => {
-                return stat.stat.name;
-            });
-
-            //create an array of types
-            const types = pokemonResult.data.types.map((type) => {
-                return type.type.name;
-            });
 
             //display abilities
-            abilities.forEach((ability) => {
-                $("#abilities").append(`
+            pokemon.abilities.forEach((ability) => {
+                $(`#${pokemon.id}Abilities`).append(`
             <li>${ability}</li>
         `);
+            });
 
+            //display stats
+            pokemon.stats.forEach((stat, index) => {
+                $(`#${pokemon.id}Stats`).append(`
+            <li>${stat.name}: ${stat.base_stat}</li>
+        `);
+
+            }
+            );
+
+            //display types
+            pokemon.types.forEach((type) => {
+                $(`#${pokemon.id}Types`).append(`
+            <li> ${type}</li>
+            `);
             });
         };
 
@@ -451,7 +428,7 @@ const setup = async () => {
         $("#main").empty();
 
         //trigger the event handler for the id of the current active button
-        $(`#button${activeButtonNumber + 1}`).trigger("click");
+        $(`#button${activeButtonNumber + 1} `).trigger("click");
 
 
     });
@@ -474,7 +451,7 @@ const setup = async () => {
         $("#main").empty();
 
         //trigger the event handler for the id of the current active button
-        $(`#button${activeButtonNumber - 1}`).trigger("click");
+        $(`#button${activeButtonNumber - 1} `).trigger("click");
     });
 };
 
