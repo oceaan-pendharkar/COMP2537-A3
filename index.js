@@ -5,6 +5,10 @@ const setup = async () => {
 
     const pokemons = result.data.results;
 
+    //display total number of pokemons
+    $("#totalPokemons").text(pokemons.length);
+
+
 
     for (let i = 0; i < pokemons.slice(0, 10).length; i++) {
         // pokemons.forEach(async (pokemon, index) => {
@@ -63,6 +67,9 @@ const setup = async () => {
             <button type="button" class="btn btn-primary" id="button${i}">${i + 1}</button>
         `);
     }
+
+    //display number of pokemons per page
+    $("#displayedPokemons").text(PAGE_SIZE);
 
 
     //add event listeners to the buttons
