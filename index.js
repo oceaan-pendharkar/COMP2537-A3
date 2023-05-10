@@ -61,12 +61,18 @@ const setup = async () => {
     const PAGE_SIZE = 10;
     const numberOfBUttons = Math.ceil(pokemons.length / PAGE_SIZE);
 
-    //display the first 5 buttons
+    //display all buttons
     for (let i = 0; i < numberOfBUttons; i++) {
         $("#paginationControls").append(`
             <button type="button" class="btn btn-primary" id="button${i}">${i + 1}</button>
         `);
     }
+
+    //add hidden class to buttons 6-81
+    for (let i = 5; i < numberOfBUttons; i++) {
+        $(`#button${i}`).addClass("hidden");
+    }
+
 
     //display number of pokemons per page
     $("#displayedPokemons").text(PAGE_SIZE);
@@ -77,11 +83,26 @@ const setup = async () => {
         console.log("event handler")        //empty the main div
         $("#main").empty();
 
+
         if (event.target.innerText == 1) {
             //hide previous button
             $("#prev").addClass("hidden")
         } else {
             $("#prev").removeClass("hidden");
+
+            //remove hidden class from event.target.innerText + 2
+            $(`#button${parseInt(event.target.innerText) + 1}`).removeClass("hidden");
+
+            //add hidden class to event.target.innerText - 6 and below
+            for (let i = parseInt(event.target.innerText) - 4; i >= 0; i--) {
+                $(`#button${i}`).addClass("hidden");
+            }
+
+            // add hidden class to event.traget.innerText + 3 and above
+            for (let i = parseInt(event.target.innerText) + 2; i < numberOfBUttons; i++) {
+                $(`#button${i}`).addClass("hidden");
+            }
+
         }
 
         if (event.target.innerText == numberOfBUttons) {
@@ -101,8 +122,8 @@ const setup = async () => {
         const endIndex = startIndex + PAGE_SIZE;
 
         const slicedPokemons = pokemons.slice(startIndex, endIndex);
-        console.log(slicedPokemons);
-        console.log(startIndex);
+        // console.log(slicedPokemons);
+        // console.log(startIndex);
         for (let i = 0; i < slicedPokemons.length; i++) {
             // pokemons.forEach(async (pokemon, index) => {
             let pokemon = slicedPokemons[i];
